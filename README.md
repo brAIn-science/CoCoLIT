@@ -3,7 +3,7 @@
 # CoCoLIT
 
 <a><img src='https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white' alt='PyTorch'></a>
-<a href="[https://link-to-your-paper.pdf](https://www.arxiv.org/abs/2508.01292)"><img src='https://img.shields.io/badge/Paper-PDF-green?style=for-the-badge&logo=adobeacrobatreader&logoWidth=20&logoColor=white&labelColor=66cc00&color=94DD15' alt='Paper PDF'></a>
+<a href="https://link-to-your-paper.pdf"><img src='https://img.shields.io/badge/Paper-PDF-green?style=for-the-badge&logo=adobeacrobatreader&logoWidth=20&logoColor=white&labelColor=66cc00&color=94DD15' alt='Paper PDF'></a>
 <p>
 <strong>CoCoLIT: ControlNet-Conditioned Latent Image Translation for MRI to Amyloid PET Synthesis</strong><br>
 <a href="https://scholar.google.com/citations?user=9kuYeWcAAAAJ&hl=it&oi=ao">Alec Sargood</a><sup>*</sup>, 
