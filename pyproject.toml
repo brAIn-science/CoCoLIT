@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cocolit"
+version = "0.1.0"
+description = "CoCoLIT: ControlNet-Conditioned Latent Image Translation for MRI to Amyloid PET Synthesis"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "torch>=2.0,<3.0",
+    "monai>=1.0,<2.0",
+    "monai-generative>=0.2,<0.3",
+    "huggingface_hub",
+    "matplotlib",
+    "nibabel",
+    "numpy",
+    "pandas",
+    "rich",
+    "PyYAML",
+    "tqdm",
+    "wandb",
+]
+
+[project.scripts]
+mri2pet = "cocolit.cli.mri2pet:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
