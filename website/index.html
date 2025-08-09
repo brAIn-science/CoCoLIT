@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoCoLIT: ControlNet-Conditioned Latent Image Translation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-y: auto; /* Allow vertical scrolling */
+        }
+        #wave-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Place canvas behind content */
+        }
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            /* Add vertical padding for scrollable content */
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+        }
+        .publication-authors a, .publication-institutions {
+            transition: all 0.2s ease-in-out;
+        }
+        .publication-authors a {
+            color: #a7f3d0; /* A light green color for links */
+            text-decoration: none;
+        }
+        .publication-authors a:hover {
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(167, 243, 208, 0.7);
+        }
+        .publication-institutions:hover {
+            color: #a7f3d0;
+        }
+        /* Helper class for better BibTeX formatting */
+        .bibtex-code {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        /* Blinking cursor animation */
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        .cursor {
+            display: inline-block;
+            width: 8px; /* Width of the cursor */
+            background-color: #fff;
+            animation: blink 1s step-end infinite;
+            position: relative;
+            top: 2px; /* Adjust vertical alignment */
+            margin-left: 2px;
+        }
+        .cursor.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="wave-canvas"></canvas>
+
+    <div class="content-wrapper p-4 md:p-8">
+        <div class="w-full max-w-6xl mx-auto text-center space-y-16">
+
+            <header class="space-y-6">
+                <h1 class="text-4xl md:text-5xl font-bold">
+                    <span style="color: #8390fa">CoCoLIT</span><br> ControlNet-Conditioned Latent Image Translation for MRI to Amyloid PET Synthesis
+                </h1>
+                <div class="is-size-5 publication-authors text-lg md:text-xl text-gray-300">
+                  <span class="author-block">
+                    <a href="https://scholar.google.com/citations?user=9kuYeWcAAAAJ&hl=it&oi=ao" target="_blank">Alec Sargood</a><sup>*</sup>,
+                  </span>
+                  <span class="author-block">
+                    <a href="https://lemuelpuglisi.github.io/" target="_blank">Lemuel Puglisi</a><sup>*</sup>,
+                  </span>
+                  <span class="author-block">
+                    <a href="https://profiles.ucl.ac.uk/32379-james-cole" target="_blank">James H. Cole</a>,
+                  </span>
+                  <span class="author-block">
+                    <a href="https://neiloxtoby.com/science/" target="_blank">Neil P. Oxtoby</a>,
+                  </span>
+                  <span class="author-block">
+                    <a href="https://daniravi.wixsite.com/researchblog" target="_blank">Daniele Ravì</a><sup>†</sup>,
+                  </span>
+                  <span class="author-block">
+                    <a href="https://profiles.ucl.ac.uk/3589-daniel-alexander" target="_blank">Daniel C. Alexander</a><sup>†</sup>
+                  </span>
+                </div>
+
+                <div class="is-size-5 publication-institutions text-md md:text-lg text-gray-500">
+                    <span class="author-block">
+                      University College London, University of Catania, University of Messina
+                    </span>
+                    <br>
+                    <span class="eql-cntrb text-sm text-gray-200 mt-2 block">
+                        <sup>*</sup>Joint First Authors, <sup>†</sup>Joint Senior Authors
+                    </span>
+                </div>
+            </header>
+
+            <div class="flex justify-center items-center space-x-4">
+                <a href="https://www.arxiv.org/abs/2508.01292" 
+                   style="background-color: #8390fa;"
+                   class="flex items-center justify-center px-6 py-2 text-white font-semibold rounded-lg shadow-lg shadow-[#8390fa]/30 hover:brightness-90 transition-all duration-300">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="mr-2"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zM16 18H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path></svg>
+                   arXiv
+                </a>
+                <a href="https://github.com/brAIn-science/CoCoLIT/" 
+                   style="background-color: #8390fa;"
+                   class="flex items-center justify-center px-6 py-2 text-white font-semibold rounded-lg shadow-lg shadow-[#8390fa]/30 hover:brightness-90 transition-all duration-300">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="mr-2"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg>
+                   Code
+                </a>
+            </div>
+
+
+            <div class="flex justify-center pt-2">
+                <div class="w-full bg-transparent rounded-lg overflow-hidden">
+                    <img src="assets/preview.gif" 
+                         alt="Methodology Visualization GIF" 
+                         class="w-full h-auto object-cover rounded-lg"
+                         onerror="this.onerror=null;this.src='https://placehold.co/800x450/000000/FFFFFF?text=GIF+not+found';">
+                </div>
+            </div>
+
+            <section id="abstract">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6" style="color: #8390fa;">Abstract</h2>
+                <p class="text-gray-300 text-justify text-base md:text-lg leading-relaxed max-w-4xl mx-auto">
+                    Synthesizing amyloid PET scans from the more widely available and accessible structural MRI modality offers a promising, cost-effective approach for large-scale Alzheimer's Disease (AD) screening. This is motivated by evidence that, while MRI does not directly detect amyloid pathology, it may nonetheless encode information correlated with amyloid deposition that can be uncovered through advanced modeling. However, the high dimensionality and structural complexity of 3D neuroimaging data pose significant challenges for existing MRI-to-PET translation methods. Modeling the cross-modality relationship in a lower-dimensional latent space can simplify the learning task and enable more effective translation. As such, we present <span class="font-bold" style="color: #8390fa">CoCoLIT (ControlNet-Conditioned Latent Image Translation)</span>, a diffusion-based latent generative framework that incorporates three main innovations: (1) a novel Weighted Image Space Loss (WISL) that improves latent representation learning and synthesis quality; (2) a theoretical and empirical analysis of Latent Average Stabilization (LAS), an existing technique used in similar generative models to enhance inference consistency; and (3) the introduction of ControlNet-based conditioning for MRI-to-PET translation. We evaluate CoCoLIT's performance on publicly available datasets and find that our model significantly outperforms state-of-the-art methods on both image-based and amyloid-related metrics. Notably, in amyloid-positivity classification, CoCoLIT outperforms the second-best method with improvements of <strong>+10.5%</strong> on the internal dataset and <strong>+23.7%</strong> on the external dataset. <i><a class="font-bold" style="color: #8390fa" href="https://www.arxiv.org/abs/2508.01292">Click here to read the full paper!</a></i>
+                </p>
+            </section>
+            
+            <section id="usage-preview">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8" style="color: #8390fa;">Installation & Usage</h2>
+
+                <div class="text-justify max-w-4xl mx-auto bg-amber-900/60 border border-amber-500 text-amber-200 px-4 py-3 rounded-md text-center mb-8" role="alert">
+                  <p><strong class="font-bold text-amber-100">Coming Soon:</strong> The tool is scheduled for release upon paper acceptance. Our code and trained models will be made publicly available to facilitate reproducibility and further research in the community.</p>
+                </div>
+
+                <div class="max-w-4xl mx-auto text-left space-y-8">
+                    
+                    <p class="text-gray-300 text-base md:text-lg text-justify">
+                        Our tool requires T1w MRIs to be preprocessed using
+                        <a href="https://github.com/LemuelPuglisi/turboprep" target="_blank" class="text-[#a7f3d0] hover:underline">TurboPrep</a>.
+                        Once preprocessed, installation and usage are simple.
+                    </p>
+
+                    <div>
+                        <h3 class="font-mono text-lg text-gray-400 mb-2"># 1. Install via pip</h3>
+                        <div class="bg-gray-900/70 backdrop-blur-sm border border-gray-700 rounded-lg p-4 md:p-5 text-left overflow-x-auto">
+                            <pre class="font-mono text-green-300 text-sm md:text-base"><span class="text-gray-500 mr-2">$</span><code id="install-command"></code><span id="install-cursor" class="cursor"></span></pre>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="font-mono text-lg text-gray-400 mb-2"># 2. Run inference</h3>
+                        <div class="bg-gray-900/70 backdrop-blur-sm border border-gray-700 rounded-lg p-4 md:p-5 text-left overflow-x-auto">
+                            <pre class="font-mono text-green-300 text-sm md:text-base"><span class="text-gray-500 mr-2">$</span><code id="usage-command"></code><span id="usage-cursor" class="cursor"></span></pre>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-12 pt-6 border-t border-gray-700/50 text-sm text-gray-400 space-y-4">
+                        <div class="flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-5 w-5 mr-3 mt-0.5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.636-1.214 2.852-1.214 3.488 0l6.216 11.838A2 2 0 0116.205 18H3.795a2 2 0 01-1.756-3.063L8.257 3.099zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                            </svg>
+                            <p><strong class="font-semibold text-gray-300">For Research Use Only.</strong> This tool is not intended for clinical use or diagnosis. Its output is for research purposes only and should not be used to inform clinical decisions.</p>
+                        </div>
+                        <div class="flex items-start">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 h-5 w-5 mr-3 mt-0.5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                            </svg>
+                            <p><strong class="font-semibold text-gray-300">Non-Commercial License.</strong> The tool and its trained models are not available for commercial use. Please refer to the license for detailed terms and conditions.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section id="bibtex">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6" style="color: #8390fa;">BibTeX</h2>
+
+                <div class="text-center max-w-4xl mx-auto py-3 rounded-md text-center mb-2" role="alert">
+                    <p>If you use CoCoLIT for your research, please cite:</p>
+                  </div>
+  
+                <div class="max-w-4xl mx-auto bg-gray-900/70 backdrop-blur-sm border border-gray-700 rounded-lg p-4 md:p-6 text-left overflow-x-auto">
+                    <pre><code class="bibtex-code text-gray-400 text-sm md:text-base">@inproceedings{sargood2025cocolit,
+  title     = {{CoCoLIT}: ControlNet-Conditioned Latent Image Translation for {MRI} to Amyloid {PET} Synthesis},
+  author    = {Sargood, Alec and Puglisi, Lemuel and Cole, James H. and Oxtoby, Neil P. and Rav{\`i}, Daniele and Alexander, Daniel C.},
+  booktitle = {To Appear},
+  year      = {2025},
+  note      = {arXiv preprint}
+}</code></pre>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        // Ensure Three.js is loaded before running the script
+        window.onload = function() {
+            if (typeof THREE === 'undefined') {
+                console.error('Three.js has not been loaded.');
+                return;
+            }
+
+            // Scene setup
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('wave-canvas'), antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            // Shader uniforms
+            const uniforms = {
+                u_time: { type: 'f', value: 1.0 },
+                u_resolution: { type: 'v2', value: new THREE.Vector2() },
+                u_mouse: { type: 'v2', value: new THREE.Vector2() }
+            };
+
+            // Geometry and Material
+            const geometry = new THREE.PlaneGeometry(2, 2); // Covers the entire screen
+            const material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: `
+                    void main() {
+                        gl_Position = vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform vec2 u_resolution;
+                    uniform float u_time;
+
+                    void main() {
+                        vec2 uv = (gl_FragCoord.xy * 2.0 - u_resolution.xy) / u_resolution.y;
+
+                        // Create a swirling, hypnotic pattern
+                        float t = u_time * 0.1;
+                        
+                        // Use polar coordinates
+                        float angle = atan(uv.y, uv.x);
+                        float radius = length(uv);
+
+                        // Animate the pattern based on angle, radius, and time
+                        float color = 0.0;
+                        color += sin(angle * 10.0 + t * 5.0) * 0.5 + 0.5;
+                        color *= sin(radius * 10.0 - t * 3.0) * 0.5 + 0.5;
+                        color = pow(color, 2.0);
+
+                        // Create a vortex effect by twisting based on radius
+                        angle += pow(radius, 1.5) * 2.0 - t * 0.5;
+                        color *= 0.5 + 0.5 * sin(angle * 3.0);
+
+                        // Make it subtle and dark
+                        gl_FragColor = vec4(vec3(color * 0.1), 1.0);
+                    }
+                `
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize, false);
+            function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                uniforms.u_resolution.value.x = renderer.domElement.width;
+                uniforms.u_resolution.value.y = renderer.domElement.height;
+            }
+            onWindowResize(); // Set initial size
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+                uniforms.u_time.value += 0.05;
+                renderer.render(scene, camera);
+            }
+
+            animate();
+        };
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const installText = 'pip install cocolit';
+            const usageText = 'mri2pet --i /path/to/t1.nii.gz --o /path/to/suvr.nii.gz';
+
+            const installEl = document.getElementById('install-command');
+            const usageEl = document.getElementById('usage-command');
+            const installCursor = document.getElementById('install-cursor');
+            const usageCursor = document.getElementById('usage-cursor');
+
+            const typeWriter = (element, text, cursor, callback) => {
+                let i = 0;
+                element.innerHTML = ''; // Clear previous content
+                cursor.classList.remove('hidden');
+
+                function type() {
+                    if (i < text.length) {
+                        element.innerHTML += text.charAt(i);
+                        i++;
+                        setTimeout(type, 80); // Adjust typing speed here
+                    } else {
+                        cursor.classList.add('hidden'); // Hide cursor when done
+                        if (callback) {
+                            callback();
+                        }
+                    }
+                }
+                type();
+            };
+
+            const sectionToAnimate = document.getElementById('usage-preview');
+            
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Start typing the first command
+                        setTimeout(() => {
+                           typeWriter(installEl, installText, installCursor, () => {
+                                // Once the first is done, start the second after a short delay
+                                setTimeout(() => {
+                                    typeWriter(usageEl, usageText, usageCursor);
+                                }, 500);
+                            });
+                        }, 500); // Initial delay before starting animation
+
+                        // Stop observing once the animation has been triggered
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 }); // Trigger when 20% of the element is visible
+
+            observer.observe(sectionToAnimate);
+        });
+    </script>
+</body>
+</html>
