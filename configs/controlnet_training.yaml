@@ -1,0 +1,99 @@
+output_dir: "<ADD HERE>"
+
+training:
+  lr: 0.000025
+  n_epochs: 300
+
+wandb:
+  entity: "<ADD HERE>"
+  project: "<ADD HERE>"
+
+
+dataloader:
+    dataset_csv: "<ADD HERE>"
+    latent_path_column: "suvr_latent_path"
+    cond_latent_path_column: 'scan_latent_path'
+    divisible_pad_k: 8
+    batch_size: 2
+    do_caching: false
+
+    # Loader params for WISL
+    load_gt_suvr: true
+    gt_suvr_path_column: 'suvr_path'
+    gt_suvr_voxel_spacing: 1.5
+    gt_suvr_do_zscoring: true
+    gt_suvr_zscore_mean: 0.370730756043226
+    gt_suvr_zscore_std: 0.667580822498126
+    vae_divisible_pad_k: 8
+
+
+# This contains the arguments to initialise the MAISI VAE class in `networks.py`.
+vae_args:
+  spatial_dims: 3
+  in_channels: 1
+  out_channels: 1
+  latent_channels: 4
+  num_channels: [64, 128, 256]
+  num_res_blocks: [2, 2, 2]
+  norm_num_groups: 32
+  norm_eps: 0.000001
+  attention_levels: [false, false, false]
+  with_encoder_nonlocal_attn: false
+  with_decoder_nonlocal_attn: false
+  use_checkpointing: false
+  use_convtranspose: false
+  norm_float16: true
+  num_splits: 2
+  dim_split: 1
+
+vae_checkpoints: "<ADD HERE>"
+
+# This contains the arguments to initialise the diffusion U-Net class in `networks.py`.
+unet_args:
+  spatial_dims: 3
+  in_channels: 4
+  out_channels: 4
+  num_res_blocks: 2
+  num_channels: [256, 256, 256]
+  attention_levels: [false, true, true]
+  norm_num_groups: 32
+  norm_eps: 1.0e-6
+  resblock_updown: true
+  num_head_channels: [0, 256, 256]
+  transformer_num_layers: 1
+  num_class_embeds: null
+  upcast_attention: true
+  use_flash_attention: false
+
+unet_checkpoints: "<ADD HERE>"
+
+# This contains the arguments to initialise the ControlNet class in `networks.py`.
+controlnet_args:
+  spatial_dims: 3
+  in_channels: 4
+  num_res_blocks: 2
+  num_channels: [256, 256, 256]
+  attention_levels: [false, true, true]
+  norm_num_groups: 32
+  norm_eps: 1.0e-6
+  resblock_updown: true
+  num_head_channels: [0, 256, 256]
+  transformer_num_layers: 1
+  num_class_embeds: null
+  upcast_attention: true
+  use_flash_attention: false
+  conditioning_embedding_in_channels: 4
+  conditioning_embedding_num_channels: [256]
+
+controlnet_checkpoints: null
+
+
+# DDPM and DDIM scheduler args
+ddpm_sched_args:
+  num_train_timesteps: 1000
+  schedule: 'scaled_linear_beta'
+  beta_start: 0.0015 
+  beta_end: 0.0205
+
+ddim_sched_args:
+  num_inference_steps: 50

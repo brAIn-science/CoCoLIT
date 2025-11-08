@@ -1,10 +1,13 @@
 <div align="center">
 
-# CoCoLIT
+# CoCoLIT (AAAI-26)
 
 <a><img src='https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white' alt='PyTorch'></a>
-<a href="https://www.arxiv.org/abs/2508.01292"><img src='https://img.shields.io/badge/Paper-PDF-green?style=for-the-badge&logo=adobeacrobatreader&logoWidth=20&logoColor=white&labelColor=66cc00&color=94DD15' alt='Paper PDF'></a>
-<p>
+<a><img src='https://img.shields.io/badge/Paper-PDF-green?style=for-the-badge&logo=adobeacrobatreader&logoWidth=20&logoColor=white&labelColor=66cc00&color=94DD15' alt='Paper PDF'></a>
+<a href="https://huggingface.co/"><img src="https://img.shields.io/badge/Hugging%20Face-Model-yellow?style=for-the-badge&logo=huggingface" alt="Hugging Face Model"></a>
+<a><img src='https://img.shields.io/github/license/brAIn-science/CoCoLIT?style=for-the-badge' alt='PyTorch'></a>
+
+
 <strong>CoCoLIT: ControlNet-Conditioned Latent Image Translation for MRI to Amyloid PET Synthesis</strong><br>
 <a href="https://scholar.google.com/citations?user=9kuYeWcAAAAJ&hl=it&oi=ao">Alec Sargood</a><sup>*</sup>, 
 <a href="https://lemuelpuglisi.github.io/">Lemuel Puglisi</a><sup>*</sup>, 
@@ -31,15 +34,25 @@
 
 ## Installation
 
-*Instructions will be uploaded upon acceptance.*
+This repository requires Python 3.10 and PyTorch 2.0 or later. To install the latest version, run:
+
+```bash
+pip install cocolit
+```
 
 ## Usage
 
-*Instructions will be uploaded upon acceptance.*
+After installing the package, you can convert a T1-weighted MRI to a Florbetapir SUVR map by running:
+
+```bash
+mri2pet --i /path/to/t1.nii.gz --o /path/to/output.nii.gz
+```
+
+To replicate the results presented in the paper, include the `--m 64` flag.
 
 ## Training & Reproducibility
 
-*Instructions will be uploaded upon acceptance.*
+To reproduce the experiments reported in the paper, please follow the [reproducibility guide](./docs/reproducibility.md).
 
 ## Disclaimer
 
@@ -50,5 +63,10 @@ This software is not intended for clinical use. The code is not available for co
 Arxiv Preprint:
 
 ```bib
-[wip]
+@article{sargood2025cocolit,
+  title={CoCoLIT: ControlNet-Conditioned Latent Image Translation for MRI to Amyloid PET Synthesis},
+  author={Sargood, Alec and Puglisi, Lemuel and Cole, James H and Oxtoby, Neil P and Rav{\`\i}, Daniele and Alexander, Daniel C},
+  journal={arXiv preprint arXiv:2508.01292},
+  year={2025}
+}
 ```

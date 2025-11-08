@@ -1,0 +1,60 @@
+name: 'mri-vae'
+output_dir: "<ADD HERE>"
+
+training:
+  lr: 0.0002 
+  n_epochs: 200
+  grad_acc_expt_bs: 16
+  adv_weight: 0.025
+  perceptual_weight: 0.001 
+  kl_weight: 1e-7
+
+wandb:
+  entity: "<ADD HERE>"
+  project: "<ADD HERE>"
+
+# This contains the arguments for the `load_volumetric_data` 
+# function in `data.py`.
+dataloader:
+  dataset_csv: "<ADD HERE>"
+  image_path_column: 'scan_path' 
+  voxel_spacing: 1.5
+  divisible_pad_k: 8
+  batch_size: 1
+  do_augmentation: true
+  do_caching: true
+  do_zscoring: true
+  zscore_mean: -49.757356053158766
+  zscore_std: 24.68868751354585
+
+# This contains the arguments to initialise the MAISI VAE class in `networks.py`.
+vae_args:
+  spatial_dims: 3
+  in_channels: 1
+  out_channels: 1
+  latent_channels: 4
+  num_channels: [64, 128, 256]
+  num_res_blocks: [2, 2, 2]
+  norm_num_groups: 32
+  norm_eps: 0.000001
+  attention_levels: [false, false, false]
+  with_encoder_nonlocal_attn: false
+  with_decoder_nonlocal_attn: false
+  use_checkpointing: false
+  use_convtranspose: false
+  norm_float16: true
+  num_splits: 2
+  dim_split: 1
+
+# This contains the arguments to initialise the PatchDiscriminator class in `networks.py`.
+patch_disc_args:
+  spatial_dims: 3
+  num_layers_d: 3
+  channels: 32
+  in_channels: 1
+  out_channels: 1
+  norm: "INSTANCE"
+
+# if you want to resume training:
+vae_checkpoints: null
+patch_disc_checkpoints: null
