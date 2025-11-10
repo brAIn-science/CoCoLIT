@@ -81,8 +81,8 @@ class CondDistributionSampler:
             # add batch size.
             source_x = source_x.unsqueeze(0)
 
-        with autocast(device_type=device, dtype=torch.float16):
-            source_z = self.source_vae(source_x)[1]
+        with autocast(device_type=device, dtype=torch.float16, enabled=True):
+            source_z = self.source_vae(source_x.to(device))[1]
 
         source_z = self.to_ldm_space(source_z.cpu()).to(device)
         return self._sample(source_z, las_m, device)
