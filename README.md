@@ -3,9 +3,11 @@
 # CoCoLIT (AAAI-26)
 
 <a><img src='https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white' alt='PyTorch'></a>
-<a><img src='https://img.shields.io/badge/Paper-PDF-green?style=for-the-badge&logo=adobeacrobatreader&logoWidth=20&logoColor=white&labelColor=66cc00&color=94DD15' alt='Paper PDF'></a>
-<a href="https://huggingface.co/"><img src="https://img.shields.io/badge/Hugging%20Face-Model-yellow?style=for-the-badge&logo=huggingface" alt="Hugging Face Model"></a>
-<a><img src='https://img.shields.io/github/license/brAIn-science/CoCoLIT?style=for-the-badge' alt='PyTorch'></a>
+<a href="https://arxiv.org/abs/2508.01292"><img src='https://img.shields.io/badge/Paper-PDF-green?style=for-the-badge&logo=adobeacrobatreader&logoWidth=20&logoColor=white&labelColor=66cc00&color=94DD15' alt='Paper PDF'></a>
+<a href="https://huggingface.co/lemuelpuglisi/CoCoLIT/tree/main"><img src="https://img.shields.io/badge/Hugging%20Face-Model-yellow?style=for-the-badge&logo=huggingface" alt="Hugging Face Model"></a>
+<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">
+    <img src="https://img.shields.io/badge/License-CC_BY--NC_4.0-lightgrey?style=for-the-badge" alt="License: Attribution-NonCommercial 4.0 International">
+</a>
 
 
 <strong>CoCoLIT: ControlNet-Conditioned Latent Image Translation for MRI to Amyloid PET Synthesis</strong><br>
