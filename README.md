@@ -1,6 +1,6 @@
 <div align="center">
 
-# CoCoLIT (AAAI-26)
+# CoCoLIT (AAAI'26)
 
 <a><img src='https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white' alt='PyTorch'></a>
 <a href="https://arxiv.org/abs/2508.01292"><img src='https://img.shields.io/badge/Paper-PDF-green?style=for-the-badge&logo=adobeacrobatreader&logoWidth=20&logoColor=white&labelColor=66cc00&color=94DD15' alt='Paper PDF'></a>
@@ -33,6 +33,11 @@
   <a href="#disclaimer" style="margin: 0 15px;">Disclaimer</a> •
   <a href="#citing" style="margin: 0 15px;">Citing</a>
 </div>
+
+## News
+
+- **2025-10:** Our paper *CoCoLIT* has been **accepted at AAAI 2026** (17% acceptance rate).
+
 
 ## Installation
 
