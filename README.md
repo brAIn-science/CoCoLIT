@@ -50,7 +50,8 @@ mri2pet --i /path/to/t1.nii.gz --o /path/to/output.nii.gz
 
 To replicate the results presented in the paper, include the `--m 64` flag.
 
-<a href="https://asciinema.org/a/NO5wKQMK5o9YI0Crw3OZGwVJN" target="_blank"><img src="https://asciinema.org/a/NO5wKQMK5o9YI0Crw3OZGwVJN.svg" /></a>
+<img width="100%" src="docs/assets/cocolit-cli.svg">
+
 
 ## Training & Reproducibility
 
