@@ -50,6 +50,8 @@ mri2pet --i /path/to/t1.nii.gz --o /path/to/output.nii.gz
 
 To replicate the results presented in the paper, include the `--m 64` flag.
 
+[![asciicast](https://asciinema.org/a/NO5wKQMK5o9YI0Crw3OZGwVJN.svg)](https://asciinema.org/a/NO5wKQMK5o9YI0Crw3OZGwVJN)
+
 ## Training & Reproducibility
 
 To reproduce the experiments reported in the paper, please follow the [reproducibility guide](./docs/reproducibility.md).
