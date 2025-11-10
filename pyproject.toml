@@ -30,6 +30,7 @@ dependencies = [
     "PyYAML",
     "tqdm",
     "wandb",
+    "scipy",
 ]
 
 [project.scripts]
