@@ -98,3 +98,7 @@ def main():
     suvr = convert_to_suvr(suvr)
     save_suvr(suvr, args.i, args.o)
     console.print(f"✅ [bold green]Predicted SUVR map saved in {args.o}")
+
+
+    console.print(f"ℹ️ [bold cyan] CoCoLIT's threshold for amyloid positivity is SUVR > 1.326.")
+    console.print(f"❌ [bold yellow]This tool is not intended for clinical or commercial use. Its output is for research purposes only and should not be used to inform clinical decisions.")
