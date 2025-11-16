@@ -11,8 +11,8 @@
 
 
 <strong>CoCoLIT: ControlNet-Conditioned Latent Image Translation for MRI to Amyloid PET Synthesis</strong><br>
-<a href="https://scholar.google.com/citations?user=9kuYeWcAAAAJ&hl=it&oi=ao">Alec Sargood</a><sup>*</sup>, 
-<a href="https://lemuelpuglisi.github.io/">Lemuel Puglisi</a><sup>*</sup>, 
+<a href="https://scholar.google.com/citations?user=9kuYeWcAAAAJ&hl=it&oi=ao">Alec Sargood</a>\*, 
+<a href="https://lemuelpuglisi.github.io/">Lemuel Puglisi</a>\*, 
 <a href="https://profiles.ucl.ac.uk/32379-james-cole">James Cole</a>, 
 <a href="https://neiloxtoby.com/science/">Neil Oxtoby</a>, 
 <a href="https://daniravi.wixsite.com/researchblog">Daniele Ravì</a><sup>†</sup>, 
