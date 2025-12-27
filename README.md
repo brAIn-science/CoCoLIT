@@ -62,6 +62,9 @@ To replicate the results presented in the paper, include the `--m 64` flag.
 
 ## Training & Reproducibility
 
+> [!NOTE]
+> If you wish to compare your MRI-to-PET model against CoCoLIT but prefer not to retrain our models due to limited compute or time, please [email us](#contacts) and we will provide the exact training splits used in this work to enable benchmarking with our pretrained models.
+
 To reproduce the experiments reported in the paper, please follow the [reproducibility guide](./docs/reproducibility.md).
 
 ## Disclaimer
@@ -80,3 +83,8 @@ Arxiv Preprint:
   year={2025}
 }
 ```
+
+## Contacts
+For any inquiries, please contact:
+* Alec Sargood: alec.sargood.23@ucl.ac.uk
+* Lemuel Puglisi: lemuel.puglisi@phd.unict.it
