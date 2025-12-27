@@ -2,6 +2,14 @@
 
 This document provides a step-by-step guide to reproduce the experiments and results presented in the paper *"CoCoLIT: ControlNet-Conditioned Latent Image Translation for MRI to Amyloid PET Synthesis."* It is not intended for beginners; prior experience in medical image analysis, as well as practical programming and deep learning (e.g., using Python and PyTorch), is assumed.
 
+## 0. Local installation
+
+Install the `cocolit` python package locally by running the following command at the root of the project directory:
+
+```bash
+pip install -e .
+```
+
 ## 1. Data Gathering
 
 Request access to both the ADNI and A4 datasets through the [IDA portal](https://ida.loni.usc.edu/login.jsp). Download the MPRAGE MRIs and FBP PET scans from the portal. Since the data are not organized for deep learning tasks, please contact the corresponding authors with proof of access to obtain the exact image UIDs and dataset splits used in the study. For data preprocessing of both the MRI and FBP PET, refer to the Supplementary Material of the paper. As the preprocessing involves converting the PET scans to SUVR maps, we will refer to these maps as *SUVR* from this point forward.
