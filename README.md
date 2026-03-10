@@ -38,6 +38,7 @@
 
 ## News
 
+- **2026-03** Try *CoCoLIT* on your own data using our notebook on [Google Colab](https://colab.research.google.com/github/brAIn-science/CoCoLIT/blob/main/notebooks/minimal-guide.ipynb) 🔥
 - **2025-10:** Our paper *CoCoLIT* has been **accepted at AAAI 2026** (17% acceptance rate).
 
 
