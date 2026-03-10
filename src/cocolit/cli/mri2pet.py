@@ -60,6 +60,7 @@ def main():
     )
 
     pipe_input = nib.load(args.i)
+    output_reference = pipe_input
 
     # Preprocess the input MRI
     if args.preprocess:
@@ -78,6 +79,7 @@ def main():
 
             status.update(f"Running WhiteStripe normalization.")
             pipe_input = whitestripe_normalize(brain_scan_mni, brain_mask_mni)
+            output_reference = pipe_input
 
             if args.preprocess_out is not None:
                 status.update(f"Saving preprocessing outputs into {args.preprocess_out}")
@@ -131,7 +133,7 @@ def main():
     console.print(f"🧠 [bold] Predicting the amyloid-PET.")    
     suvr = sampler.sample(input_mri, device=args.device, las_m=args.m)
     suvr = convert_to_suvr(suvr)
-    save_suvr(suvr, pipe_input, args.o)
+    save_suvr(suvr, input_mri, output_reference, args.o)
     console.print(f"✅ [bold green]Predicted SUVR map saved in {args.o}")
 
 

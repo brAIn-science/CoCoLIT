@@ -1,14 +1,16 @@
 import os
-import yaml
 from collections import defaultdict
+from typing import Union
+
+import yaml
 
 import wandb
 import numpy as np
-import nibabel as nib
 import torch
 import matplotlib.pyplot as plt
+import nibabel as nib
 from torch import Tensor
-from nibabel.processing import resample_from_to, resample_to_output
+from nibabel.processing import resample_from_to
 
 from .defaults import DEFAULT_ZSCORES_PARAMS
 
@@ -209,20 +211,29 @@ def convert_to_suvr(x: torch.Tensor):
     return (x * zscore_std) + zscore_mean
 
 
-def save_suvr(predicted_suvr, input_mri, suvr_output_path):
+def save_suvr(
+    predicted_suvr: torch.Tensor,
+    transformed_input_mri: Tensor,
+    reference_mri: Union[nib.nifti1.Nifti1Image, nib.nifti2.Nifti2Image],
+    suvr_output_path: str
+):
     """
-    Utility function to save the SUVR in the same space as the input MRI
+    Save the predicted SUVR using the exact affine/shape produced by the
+    inference transforms, then resample it to the requested reference MRI.
 
     Args:
-        predicted_suvr (np.ndarray): The predicted SUVR map as torch tensor (C x H x W x D).
-        mri_input (Nifti1Image|Nifti2Image): The input MRI scan
+        predicted_suvr (torch.Tensor): The predicted SUVR map (C x H x W x D).
+        transformed_input_mri (Tensor): The transformed MRI tensor used for
+            inference. It must expose the post-spacing affine.
+        reference_mri (Nifti1Image|Nifti2Image): The target space for the saved map.
         suvr_output_path (str): The desired file path to save the output SUVR map.
-    """    
-    mri_resampled = resample_to_output(input_mri, voxel_sizes=1.5)
-    input_shape = mri_resampled.shape    
-    predicted_suvr = unpad(predicted_suvr.squeeze(0), input_shape).cpu().numpy()
-    predicted_suvr = nib.nifti1.Nifti1Image(predicted_suvr.astype(np.float32), mri_resampled.affine)
-    predicted_suvr = resample_from_to(predicted_suvr, input_mri)
+    """
+    transformed_shape = tuple(int(dim) for dim in transformed_input_mri.shape[-3:])
+    transformed_affine = transformed_input_mri.affine.cpu().numpy()
+
+    predicted_suvr = unpad(predicted_suvr.squeeze(0), transformed_shape).cpu().numpy()
+    predicted_suvr = nib.nifti1.Nifti1Image(predicted_suvr.astype(np.float32), transformed_affine)
+    predicted_suvr = resample_from_to(predicted_suvr, reference_mri)
     predicted_suvr.to_filename(suvr_output_path)
 
 
