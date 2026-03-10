@@ -209,19 +209,27 @@ def convert_to_suvr(x: torch.Tensor):
     return (x * zscore_std) + zscore_mean
 
 
-def save_suvr(predicted_suvr, mri_input_path, suvr_output_path):
+def save_suvr(predicted_suvr, input_mri, suvr_output_path):
     """
     Utility function to save the SUVR in the same space as the input MRI
 
     Args:
         predicted_suvr (np.ndarray): The predicted SUVR map as torch tensor (C x H x W x D).
-        mri_input_path (str): The file path to the input MRI scan
+        mri_input (Nifti1Image|Nifti2Image): The input MRI scan
         suvr_output_path (str): The desired file path to save the output SUVR map.
     """    
-    mri = nib.load(mri_input_path)
-    mri_resampled = resample_to_output(mri, voxel_sizes=1.5)
+    mri_resampled = resample_to_output(input_mri, voxel_sizes=1.5)
     input_shape = mri_resampled.shape    
     predicted_suvr = unpad(predicted_suvr.squeeze(0), input_shape).cpu().numpy()
     predicted_suvr = nib.nifti1.Nifti1Image(predicted_suvr.astype(np.float32), mri_resampled.affine)
-    predicted_suvr = resample_from_to(predicted_suvr, mri)
+    predicted_suvr = resample_from_to(predicted_suvr, input_mri)
     predicted_suvr.to_filename(suvr_output_path)
+
+
+def freeze_module(m: torch.nn.Module):
+    """
+    Freeze the weights of a module.
+    """
+    for p in m.parameters():
+        p.requires_grad = False
+    return m
