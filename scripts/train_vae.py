@@ -16,7 +16,7 @@ from tqdm import tqdm
 from cocolit import utils
 from cocolit import networks
 from cocolit.data import load_volumetric_data
-from mri2pet.gradacc import GradientAccumulation
+from cocolit.gradacc import GradientAccumulation
 
 
 set_determinism(0)
