@@ -5,9 +5,11 @@
 <a><img src='https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white' alt='PyTorch'></a>
 <a href="https://arxiv.org/abs/2508.01292"><img src='https://img.shields.io/badge/Paper-PDF-green?style=for-the-badge&logo=adobeacrobatreader&logoWidth=20&logoColor=white&labelColor=66cc00&color=94DD15' alt='Paper PDF'></a>
 <a href="https://huggingface.co/lemuelpuglisi/CoCoLIT/tree/main"><img src="https://img.shields.io/badge/Hugging%20Face-Model-yellow?style=for-the-badge&logo=huggingface" alt="Hugging Face Model"></a>
-<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">
-    <img src="https://img.shields.io/badge/License-CC_BY--NC_4.0-lightgrey?style=for-the-badge" alt="License: Attribution-NonCommercial 4.0 International">
+
+<a href="https://colab.research.google.com/github/brAIn-science/CoCoLIT/blob/main/notebooks/minimal-guide.ipynb">
+    <img src="https://img.shields.io/badge/Google%20Colab-Open%20Notebook-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white" alt="Open in Google Colab">
 </a>
+
 
 
 <strong>CoCoLIT: ControlNet-Conditioned Latent Image Translation for MRI to Amyloid PET Synthesis</strong><br>
@@ -85,6 +87,10 @@ To reproduce the experiments reported in the paper, please follow the [reproduci
 ## Disclaimer
 
 This software is not intended for clinical use. The code is not available for commercial applications. For commercial inquiries, please contact the corresponding authors.
+
+<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">
+    <img src="https://img.shields.io/badge/License-CC_BY--NC_4.0-lightgrey?style=for-the-badge" alt="License: Attribution-NonCommercial 4.0 International">
+</a>
 
 ## Citing
 
