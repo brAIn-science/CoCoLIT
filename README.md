@@ -55,6 +55,21 @@ After installing the package, you can convert a T1-weighted MRI to a Florbetapir
 mri2pet --i /path/to/t1.nii.gz --o /path/to/output.nii.gz
 ```
 
+If your MRI has **not** been preprocessed yet, you can run the full preprocessing pipeline directly from the CLI (skull-stripping, affine registration to MNI space, and WhiteStripe normalization):
+
+```bash
+mri2pet --i /path/to/t1.nii.gz --o /path/to/output.nii.gz \
+  --preprocess
+```
+
+Optionally, save intermediate preprocessing files with:
+
+```bash
+mri2pet --i /path/to/t1.nii.gz --o /path/to/output.nii.gz \
+  --preprocess \
+  --preprocess_out /path/to/preproc_outputs
+```
+
 To replicate the results presented in the paper, include the `--m 64` flag.
 
 <img width="100%" src="docs/assets/cocolit-cli.svg">

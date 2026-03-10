@@ -12,6 +12,8 @@ def main():
     parser.add_argument('--device', type=str, default='cuda', help='Device (cuda or cpu)')
     parser.add_argument('--m',      type=int, default=1,  help='LAS hyperparameter')
     parser.add_argument('--ddim_n', type=int, default=50, help='Number of denoising steps in DDIM sampling')
+    parser.add_argument('--preprocess', action='store_true', help="Skull-strip and align to the MNI template")
+    parser.add_argument('--preprocess_out', type=str, default=None, help="Output directory where to save intermediate preprocessing outputs")
     
     args = parser.parse_args()
 
@@ -20,6 +22,7 @@ def main():
         exit(1)
 
     # Load libraries only when the input is validated.
+    import nibabel as nib
     from rich.text import Text
     from rich.panel import Panel
     from rich.console import Console
@@ -29,6 +32,7 @@ def main():
     from cocolit import networks
     from cocolit.utils import convert_to_suvr, save_suvr
     from cocolit.sampling import CondDistributionSampler
+    from cocolit.preprocessing import align, SkullStripping, NibToMetaTensor, whitestripe_normalize
     from cocolit.defaults import (
         DEFAULT_ZSCORES_PARAMS,
         DEFAULT_DIFFSCHED_ARGS
@@ -55,16 +59,47 @@ def main():
         )
     )
 
+    pipe_input = nib.load(args.i)
+
+    # Preprocess the input MRI
+    if args.preprocess:
+        with console.status("> Preprocessing the input MRI...") as status:
+
+            skull_stripping = SkullStripping(args.device)
+            mni_template_path = hf_hub_download(repo_id='lemuelpuglisi/generics', filename='MNI152_T1_1mm_Brain.nii.gz')
+            mni_template = nib.load(mni_template_path)
+
+            status.update(f"Running skull-stripping.")
+            input_scan = nib.load(args.i)
+            brain_scan, brain_mask = skull_stripping.run(input_scan)
+
+            status.update(f"Running affine registration to MNI space.")
+            brain_scan_mni, brain_mask_mni = align(brain_scan, mni_template, masks=brain_mask)
+
+            status.update(f"Running WhiteStripe normalization.")
+            pipe_input = whitestripe_normalize(brain_scan_mni, brain_mask_mni)
+
+            if args.preprocess_out is not None:
+                status.update(f"Saving preprocessing outputs into {args.preprocess_out}")
+                os.makedirs(args.preprocess_out, exist_ok=True)
+
+                brain_scan.to_filename(os.path.join(args.preprocess_out, 'brain_orig_space.nii.gz'))
+                brain_mask.to_filename(os.path.join(args.preprocess_out, 'mask_orig_space.nii.gz'))
+                brain_scan_mni.to_filename(os.path.join(args.preprocess_out, 'brain_mni_space.nii.gz'))
+                brain_mask_mni.to_filename(os.path.join(args.preprocess_out, 'mask_mni_space.nii.gz'))
+                pipe_input.to_filename(os.path.join(args.preprocess_out, 'norm_mni_space.nii.gz'))
+                                       
     # Load the input MRI
     smri_mean, smri_std = DEFAULT_ZSCORES_PARAMS['smri_mean'], DEFAULT_ZSCORES_PARAMS['smri_std']
     
     loading_transforms = transforms.Compose([
-        transforms.LoadImage(),
+        NibToMetaTensor(),
         transforms.EnsureChannelFirst(),
         transforms.Spacing(pixdim=1.5),
         transforms.DivisiblePad(k=8),
         transforms.NormalizeIntensity(subtrahend=smri_mean, divisor=smri_std)
     ])
+
     
     with console.status("> Pulling the models from huggingface...") as status:
         smri_vae_ckpt   = hf_hub_download(repo_id='lemuelpuglisi/CoCoLIT', filename='src.pth')
@@ -83,7 +118,7 @@ def main():
     noise_scheduler = DDIMScheduler(**DEFAULT_DIFFSCHED_ARGS)
     noise_scheduler.set_timesteps(num_inference_steps=args.ddim_n, device=args.device)
     
-    input_mri = loading_transforms(args.i)
+    input_mri = loading_transforms(pipe_input)
     
     sampler = CondDistributionSampler(
         source_vae=smri_vae,
@@ -96,7 +131,7 @@ def main():
     console.print(f"🧠 [bold] Predicting the amyloid-PET.")    
     suvr = sampler.sample(input_mri, device=args.device, las_m=args.m)
     suvr = convert_to_suvr(suvr)
-    save_suvr(suvr, args.i, args.o)
+    save_suvr(suvr, pipe_input, args.o)
     console.print(f"✅ [bold green]Predicted SUVR map saved in {args.o}")
 
 

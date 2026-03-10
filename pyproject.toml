@@ -21,6 +21,7 @@ dependencies = [
     "torch>=2.0,<3.0",
     "monai>=1.0,<2.0",
     "monai-generative>=0.2,<0.3",
+    "antspyx==0.*",
     "huggingface_hub",
     "matplotlib",
     "nibabel",
