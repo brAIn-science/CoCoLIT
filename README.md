@@ -44,7 +44,7 @@
 
 ## Installation
 
-This repository requires Python 3.10 and PyTorch 2.0 or later. To install the latest version, run:
+This repository requires Python >= 3.10 & <= 3.13. To install the latest version, run:
 
 ```bash
 pip install cocolit
